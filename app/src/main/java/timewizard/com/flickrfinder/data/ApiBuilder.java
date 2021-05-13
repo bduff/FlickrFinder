@@ -1,6 +1,7 @@
 package timewizard.com.flickrfinder.data;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,51 +41,7 @@ public class ApiBuilder {
                 .buildUrl();
     }
 
-    public static String getPhotoInfoURL(String photoId) {
-        return new FlickrUrlBuilder()
-                .photoInfoUrl()
-                .addPhotoId(photoId)
-                .addJsonFormat()
-                .buildUrl();
-    }
-
-    public static String getPhotoSizesURL(String photoId) {
-        return new FlickrUrlBuilder()
-                .photoSizesUrl()
-                .addPhotoId(photoId)
-                .addJsonFormat()
-                .buildUrl();
-    }
-
-    private static class UrlBuilder {
-        protected String url;
-        protected HashMap params;
-
-        public String buildUrl() {
-            constructParams();
-            return this.url;
-        }
-
-        protected void addParam(String param, String value) {
-            params.put(param, value);
-        }
-
-        protected String constructBaseURL(String method) {
-            return "";
-        }
-
-        protected void constructParams() {
-            Set paramSet = params.keySet();
-            Iterator<String> iter = paramSet.iterator();
-
-            while (iter.hasNext()) {
-                String param = iter.next();
-                this.url += "&" + param + "=" + params.get(param);
-            }
-        }
-    }
-
-    private static class FlickrUrlBuilder extends UrlBuilder {
+    private static class FlickrUrlBuilder {
 
         private static final String FLICKR_BASE_URL = "https://api.flickr.com/services/rest/?method=%s&api_key=%s";
 
@@ -92,12 +49,9 @@ public class ApiBuilder {
         private static final String FLICKR_METHOD_PHOTO_INTERESTING = "flickr.interestingness.getList";
         private static final String FLICKR_METHOD_PHOTO_RECENT = "flickr.photos.getRecent";
 
-        private static final String FLICKR_METHOD_PHOTO_INFO = "flickr.photos.getInfo";
-        private static final String FLICKR_METHOD_PHOTO_SIZES = "flickr.photos.getSizes";
-
-        private static final String FLICKR_PARAM_PHOTO_ID = "photo_id";
         private static final String FLICKR_PARAM_SEARCH_TEXT = "text";
         private static final String FLICKR_PARAM_SORT = "sort";
+        private static final String FLICKR_PARAM_DATE = "date";
         private static final String FLICKR_PARAM_PHOTOS_PAGE = "page";
         private static final String FLICKR_PARAM_PHOTOS_PER_PAGE = "per_page";
         private static final String FLICKR_PARAM_EXTRAS = "extras";
@@ -117,6 +71,8 @@ public class ApiBuilder {
         private static final String FLICKR_VALUE_DEFAULT_PHOTOS_PER_PAGE = "25";
         private static final String FLICKR_VALUE_FORMAT_JSON = "json";
 
+        private String url;
+        private HashMap params;
 
         public FlickrUrlBuilder() {
             params = new HashMap();
@@ -128,23 +84,11 @@ public class ApiBuilder {
         }
         public FlickrUrlBuilder popularPhotosUrl() {
             this.url = constructBaseURL(FLICKR_METHOD_PHOTO_INTERESTING);
+            addParam(FLICKR_PARAM_DATE, "2021-05-10");
             return FlickrUrlBuilder.this;
         }
         public FlickrUrlBuilder recentPhotosUrl() {
             this.url = constructBaseURL(FLICKR_METHOD_PHOTO_RECENT);
-            return FlickrUrlBuilder.this;
-        }
-        public FlickrUrlBuilder photoInfoUrl() {
-            this.url = constructBaseURL(FLICKR_METHOD_PHOTO_INFO);
-            return FlickrUrlBuilder.this;
-        }
-        public FlickrUrlBuilder photoSizesUrl() {
-            this.url = constructBaseURL(FLICKR_METHOD_PHOTO_SIZES);
-            return FlickrUrlBuilder.this;
-        }
-
-        public FlickrUrlBuilder addPhotoId(String id) {
-            addParam(FLICKR_PARAM_PHOTO_ID, id);
             return FlickrUrlBuilder.this;
         }
 
@@ -188,9 +132,29 @@ public class ApiBuilder {
             return FlickrUrlBuilder.this;
         }
 
-        @Override
-        protected String constructBaseURL(String method) {
+        public String buildUrl() {
+            constructParams();
+            Log.d(BuildConfig.TAG_FLICKR_FINDER, this.url);
+            return this.url;
+        }
+
+        private void addParam(String param, String value) {
+            params.put(param, value);
+        }
+
+        private void constructParams() {
+            Set paramSet = params.keySet();
+            Iterator<String> iter = paramSet.iterator();
+
+            while (iter.hasNext()) {
+                String param = iter.next();
+                this.url += "&" + param + "=" + params.get(param);
+            }
+        }
+
+        private String constructBaseURL(String method) {
             return String.format(FLICKR_BASE_URL, method, BuildConfig.FLICKR_API_KEY);
         }
+
     }
 }

@@ -1,12 +1,16 @@
 package timewizard.com.flickrfinder.ui.main
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import timewizard.com.flickrfinder.BuildConfig
 import timewizard.com.flickrfinder.R
+import timewizard.com.flickrfinder.activity.MainActivity
 
 class PhotoListFragment : Fragment() {
 
@@ -25,11 +30,11 @@ class PhotoListFragment : Fragment() {
 
     private lateinit var mViewModel: PhotoViewModel
 
+    private lateinit var mMusicMenuItem: MenuItem
     private lateinit var mSearchMenuItem: MenuItem
     private lateinit var mSearchButton: SearchView
     private lateinit var mPageLeftButton: ImageButton
     private lateinit var mPageRightButton: ImageButton
-
 
     private lateinit var mSearchTextView: TextView
     private lateinit var mCountText: TextView
@@ -67,8 +72,10 @@ class PhotoListFragment : Fragment() {
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         Log.d(BuildConfig.TAG_FLICKR_FINDER, "onPrepareOptionsMenu")
-        prepareSearchView(menu)
+        mMusicMenuItem = menu.findItem(R.id.menu_music)
         menu.findItem(R.id.menu_sort).setVisible(true)
+        prepareSearchView(menu)
+        updateMenu()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -76,6 +83,7 @@ class PhotoListFragment : Fragment() {
             R.id.sort_relevant-> mViewModel.sortPhotos(PhotoViewModel.Sort.RELEVANT)
             R.id.sort_interesting -> mViewModel.sortPhotos(PhotoViewModel.Sort.INTERESTING)
             R.id.sort_recent -> mViewModel.sortPhotos(PhotoViewModel.Sort.RECENT)
+            R.id.menu_music -> toggleMusic()
         }
         updateDisplay()
         return super.onOptionsItemSelected(item)
@@ -121,6 +129,24 @@ class PhotoListFragment : Fragment() {
                 return false
             }
         })
+    }
+
+    private fun toggleMusic() {
+        if ((activity as MainActivity).isSoundPlaying) {
+            (activity as MainActivity).pauseSound()
+        } else {
+            (activity as MainActivity).resumeSound()
+        }
+        updateMenu()
+    }
+
+    private fun updateMenu() {
+        if ((activity as MainActivity).isSoundPlaying) {
+            mMusicMenuItem.icon = context?.getDrawable(R.drawable.ic_music_on_white)
+        } else {
+            mMusicMenuItem.icon = context?.getDrawable(R.drawable.ic_music_off_white)
+        }
+        DrawableCompat.setTint(mMusicMenuItem.icon, Color.WHITE)
     }
 
     // update the textviews and buttons based on data from the viewmodel

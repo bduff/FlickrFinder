@@ -2,6 +2,7 @@ package timewizard.com.flickrfinder.activity;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +23,8 @@ import timewizard.com.flickrfinder.ui.main.PhotoViewModel;
 public class MainActivity extends AppCompatActivity {
 
     private PhotoViewModel mViewModel;
+    private MediaPlayer mPlayer;
+    private boolean mMusicPlaying;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        createSoundPlayer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMusicPlaying) {
+            mPlayer.start();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mPlayer.pause();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         RestClient.Companion.instance(this).getRequestQueue().cancelAll(BuildConfig.TAG_FLICKR_FINDER);
+        releaseSoundPlayer();
     }
 
     @Override
@@ -89,5 +113,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mViewModel.loadPage(1);
+    }
+
+    private void createSoundPlayer() {
+        mPlayer = MediaPlayer.create(this, R.raw.elevator_bossanova);
+        mPlayer.setLooping(true); // Set looping
+        mPlayer.setVolume(1f, 1f);
+        mMusicPlaying = true;
+    }
+
+    private void releaseSoundPlayer() {
+        mPlayer.stop();
+        mPlayer.release();
+        mPlayer = null;
+        mMusicPlaying = false;
+    }
+
+    public void pauseSound() {
+        mPlayer.pause();
+        mMusicPlaying = false;
+    }
+
+    public void resumeSound() {
+        mPlayer.start();
+        mMusicPlaying = true;
+    }
+
+    public boolean isSoundPlaying() {
+        if (mPlayer != null) {
+            return mPlayer.isPlaying();
+        }
+        return false;
     }
 }

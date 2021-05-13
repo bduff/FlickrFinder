@@ -1,10 +1,12 @@
 package timewizard.com.flickrfinder.ui.main
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.ProgressBar
 import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.github.chrisbanes.photoview.PhotoView
@@ -13,6 +15,7 @@ import com.squareup.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import timewizard.com.flickrfinder.BuildConfig
 import timewizard.com.flickrfinder.R
+import timewizard.com.flickrfinder.activity.MainActivity
 
 
 class PhotoFragment : Fragment() {
@@ -23,6 +26,7 @@ class PhotoFragment : Fragment() {
 
     private lateinit var mViewModel: PhotoViewModel
 
+    private lateinit var mMusicMenuItem: MenuItem
     private lateinit var mSearchMenuItem: MenuItem
     private lateinit var mSearchButtonView: SearchView
 
@@ -46,13 +50,16 @@ class PhotoFragment : Fragment() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        prepareSearchView(menu)
+        mMusicMenuItem = menu.findItem(R.id.menu_music)
         menu.findItem(R.id.menu_sort).setVisible(false)
+        prepareSearchView(menu)
+        updateMenu()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> returnToListView()
+            R.id.menu_music -> toggleMusic()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -102,6 +109,24 @@ class PhotoFragment : Fragment() {
                 return false
             }
         })
+    }
+
+    private fun toggleMusic() {
+        if ((activity as MainActivity).isSoundPlaying) {
+            (activity as MainActivity).pauseSound()
+        } else {
+            (activity as MainActivity).resumeSound()
+        }
+        updateMenu()
+    }
+
+    private fun updateMenu() {
+        if ((activity as MainActivity).isSoundPlaying) {
+            mMusicMenuItem.icon = context?.getDrawable(R.drawable.ic_music_on_white)
+        } else {
+            mMusicMenuItem.icon = context?.getDrawable(R.drawable.ic_music_off_white)
+        }
+        DrawableCompat.setTint(mMusicMenuItem.icon, Color.WHITE)
     }
 
     // update the viewmodel and tell the activity to pop this fragment off the backstack

@@ -143,7 +143,7 @@ class PhotoViewModel(application: Application) : AndroidViewModel(application) {
     // error callback after data fetch
     private val onDataError = object : Response.ErrorListener {
         override fun onErrorResponse(error: VolleyError) {
-            Log.e(BuildConfig.TAG_FLICKR_FINDER, error.message)
+            Log.e(BuildConfig.TAG_FLICKR_FINDER, error?.message)
             mErrorMessage.value = "Error occurred while loading data"
         }
     }

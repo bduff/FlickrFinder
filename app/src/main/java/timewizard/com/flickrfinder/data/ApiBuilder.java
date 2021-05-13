@@ -69,6 +69,10 @@ public class ApiBuilder {
             params.put(param, value);
         }
 
+        protected String constructBaseURL(String method) {
+            return "";
+        }
+
         protected void constructParams() {
             Set paramSet = params.keySet();
             Iterator<String> iter = paramSet.iterator();
@@ -122,7 +126,6 @@ public class ApiBuilder {
             this.url = constructBaseURL(FLICKR_METHOD_PHOTO_SEARCH);
             return FlickrUrlBuilder.this;
         }
-
         public FlickrUrlBuilder popularPhotosUrl() {
             this.url = constructBaseURL(FLICKR_METHOD_PHOTO_INTERESTING);
             return FlickrUrlBuilder.this;
@@ -135,7 +138,6 @@ public class ApiBuilder {
             this.url = constructBaseURL(FLICKR_METHOD_PHOTO_INFO);
             return FlickrUrlBuilder.this;
         }
-
         public FlickrUrlBuilder photoSizesUrl() {
             this.url = constructBaseURL(FLICKR_METHOD_PHOTO_SIZES);
             return FlickrUrlBuilder.this;
@@ -186,7 +188,8 @@ public class ApiBuilder {
             return FlickrUrlBuilder.this;
         }
 
-        private String constructBaseURL(String method) {
+        @Override
+        protected String constructBaseURL(String method) {
             return String.format(FLICKR_BASE_URL, method, BuildConfig.FLICKR_API_KEY);
         }
     }

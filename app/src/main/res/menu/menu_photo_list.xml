@@ -12,6 +12,12 @@
         compat:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
+        android:id="@+id/menu_music"
+        android:title="@string/menu_music"
+        android:icon="@drawable/ic_music_on_white"
+        compat:showAsAction="collapseActionView|ifRoom" />
+
+    <item
         android:id="@+id/menu_sort"
         android:title="@string/menu_sort"
         android:icon="@drawable/ic_sort_white"

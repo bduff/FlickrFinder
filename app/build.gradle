@@ -7,7 +7,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "timewizard.com.flickrfinder"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -15,6 +15,7 @@ android {
 
         buildConfigField 'String', 'TAG_FLICKR_FINDER', '"FLFI"'
         buildConfigField 'String', 'FLICKR_API_KEY', '"1508443e49213ff84d566777dc211f2a"'
+        buildConfigField 'String', 'LASTFM_API_KEY', '"9fa53f9c4bd415786c6a956ce6242507"'
     }
     buildTypes {
         release {

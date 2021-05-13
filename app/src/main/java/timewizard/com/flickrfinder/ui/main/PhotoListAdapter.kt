@@ -45,7 +45,7 @@ class PhotoListAdapter(private val context: Context, private val vm: PhotoViewMo
                         .error(R.drawable.ic_broken_image_black)
                         .into(holder.mThumbnail)
                 } catch (e: Exception) {
-                    Log.e(BuildConfig.TAG_FLICKR_FINDER, e.message)
+                    Log.e(BuildConfig.TAG_FLICKR_FINDER, e?.message)
                     Log.d(BuildConfig.TAG_FLICKR_FINDER, vm.mPhotoList.value!![position].toString())
                     vm.mErrorMessage.value = "Could not load photo at position: " + position
                 }

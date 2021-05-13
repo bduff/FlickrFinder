@@ -2,6 +2,7 @@
     <string name="app_name">Flickr Finder</string>
 
     <string name="menu_search">Search Photos</string>
+    <string name="menu_music">Toggle Music</string>
     <string name="menu_sort">Sort Photos</string>
 
     <string name="menu_sort_relevant">Sort by Relevant</string>
